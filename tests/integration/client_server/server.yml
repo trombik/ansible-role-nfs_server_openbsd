@@ -1,0 +1,41 @@
+---
+- hosts: server
+  become: yes
+  become_method: sudo
+  environment:
+    http_proxy: "{{ http_proxy | default() }}"
+    https_proxy: "{{ https_proxy | default() }}"
+    no_proxy: "{{ no_proxy | default() }}"
+
+  pre_tasks:
+    - name: Create /usr/ports/packages
+      file:
+        path: /usr/ports/packages
+        state: directory
+    - name: Create /usr/ports/packages/amd64/all
+      file:
+        path: /usr/ports/packages/amd64/all
+        state: directory
+    - name: Create /usr/ports/packages/amd64/all/README
+      copy:
+        dest: /usr/ports/packages/amd64/all/README
+        src: /usr/share/misc/license.template
+        remote_src: yes
+    - name: Create /tmp/upload
+      file:
+        path: /tmp/upload
+        owner: nobody
+        group: nobody
+        state: directory
+    - name: Create /tmp/upload/subdir
+      file:
+        path: /tmp/upload/subdir
+        owner: nobody
+        group: nobody
+        state: directory
+  roles:
+    - ansible-role-nfs_server_openbsd
+  vars:
+    nfs_server_openbsd_exports: |
+      /usr/ports/packages -alldirs -ro -network=192.168.21.0 -mask=255.255.255.0
+      /tmp/upload -mapall=nobody       -network=192.168.21.0 -mask=255.255.255.0
