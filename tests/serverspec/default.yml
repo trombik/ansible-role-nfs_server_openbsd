@@ -2,4 +2,6 @@
   roles:
     - ansible-role-nfs_server_openbsd
   vars:
-    nfs_server_openbsd_config: ""
+    nfs_server_openbsd_nfsd_flags: -tun 7
+    nfs_server_openbsd_exports: |
+      /docs -alldirs -ro -network=10.0.0 -mask=255.255.255.0

@@ -1,8 +1,4 @@
-nfs_server_openbsd_user: nfs_server_openbsd
-nfs_server_openbsd_group: nfs_server_openbsd
-nfs_server_openbsd_log_dir: /var/log/nfs_server_openbsd
-nfs_server_openbsd_db_dir: "{{ __nfs_server_openbsd_db_dir }}"
-nfs_server_openbsd_service: nfs_server_openbsd
-nfs_server_openbsd_conf_dir: "{{ __nfs_server_openbsd_conf_dir }}"
-nfs_server_openbsd_conf_file: "{{ __nfs_server_openbsd_conf_dir }}/nfs_server_openbsd.conf"
-nfs_server_openbsd_flags: ""
+nfs_server_openbsd_exports: ""
+nfs_server_openbsd_portmap_flags: ""
+nfs_server_openbsd_mountd_flags: ""
+nfs_server_openbsd_nfsd_flags: ""

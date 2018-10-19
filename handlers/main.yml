@@ -1,6 +1,15 @@
 ---
 
-- name: Restart nfs_server_openbsd
+- name: Reload mountd
+  # XXX mountd does not support restart
+  command: "sh -c 'kill -HUP `cat /var/run/mountd.pid`'"
+
+- name: Restart portmap
   service:
-    name: nfs_server_openbsd
+    name: portmap
+    state: restarted
+
+- name: Restart nfsd
+  service:
+    name: nfsd
     state: restarted

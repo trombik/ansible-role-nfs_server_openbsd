@@ -1,54 +1,40 @@
 require "spec_helper"
 require "serverspec"
 
-package = "nfs_server_openbsd"
-service = "nfs_server_openbsd"
-config  = "/etc/nfs_server_openbsd/nfs_server_openbsd.conf"
-user    = "nfs_server_openbsd"
-group   = "nfs_server_openbsd"
-ports   = [PORTS]
-log_dir = "/var/log/nfs_server_openbsd"
-db_dir  = "/var/lib/nfs_server_openbsd"
+ports = [111, 2049]
 
-case os[:family]
-when "freebsd"
-  config = "/usr/local/etc/nfs_server_openbsd.conf"
-  db_dir = "/var/db/nfs_server_openbsd"
-end
-
-describe package(package) do
-  it { should be_installed }
-end
-
-describe file(config) do
+describe file("/etc/exports") do
+  it { should exist }
   it { should be_file }
-  its(:content) { should match Regexp.escape("nfs_server_openbsd") }
+  it { should be_mode 644 }
+  it { should be_owned_by "root" }
+  it { should be_grouped_into "wheel" }
+  its(:content) { should match(/^# Managed by ansible$/) }
+  its(:content) { should match Regexp.escape("/docs -alldirs -ro -network=10.0.0 -mask=255.255.255.0") }
 end
 
-describe file(log_dir) do
+describe file "/etc/rc.conf.local" do
   it { should exist }
-  it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
+  it { should be_file }
+  it { should be_mode 644 }
+  it { should be_owned_by "root" }
+  it { should be_grouped_into "wheel" }
+  its(:content) { should match(/^nfsd_flags=-tun 7$/) }
 end
 
-describe file(db_dir) do
-  it { should exist }
-  it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
-end
-
-case os[:family]
-when "freebsd"
-  describe file("/etc/rc.conf.d/nfs_server_openbsd") do
-    it { should be_file }
+%w[portmap mountd nfsd].each do |service|
+  describe service(service) do
+    it { should be_running }
+    it { should be_enabled }
   end
 end
 
-describe service(service) do
-  it { should be_running }
-  it { should be_enabled }
+describe command "rpcinfo -p" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  #     100000    2   tcp    111  portmapper
+  its(:stdout) { should match(/^\s+\d+\s+\d+\s+(tcp|udp)\s+111\s+portmapper$/) }
+  its(:stdout) { should match(/^\s+\d+\s+\d+\s+(tcp|udp)\s+2049\s+nfs$/) }
 end
 
 ports.each do |p|
