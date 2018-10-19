@@ -4,11 +4,6 @@
   # XXX mountd does not support restart
   command: "sh -c 'kill -HUP `cat /var/run/mountd.pid`'"
 
-- name: Restart portmap
-  service:
-    name: portmap
-    state: restarted
-
 - name: Restart nfsd
   service:
     name: nfsd

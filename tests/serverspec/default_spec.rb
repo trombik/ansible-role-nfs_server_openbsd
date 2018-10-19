@@ -33,8 +33,11 @@ describe command "rpcinfo -p" do
   its(:exit_status) { should eq 0 }
   its(:stderr) { should eq "" }
   #     100000    2   tcp    111  portmapper
+  #     100003    3   tcp   2049  nfs
+  #     100005    3   tcp    957  mountd
   its(:stdout) { should match(/^\s+\d+\s+\d+\s+(tcp|udp)\s+111\s+portmapper$/) }
   its(:stdout) { should match(/^\s+\d+\s+\d+\s+(tcp|udp)\s+2049\s+nfs$/) }
+  its(:stdout) { should match(/^\s+\d+\s+\d+\s+(tcp|udp)\s+\d+\s+mountd$/) }
 end
 
 ports.each do |p|

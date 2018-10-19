@@ -3,11 +3,15 @@
 
 - name: Enable portmap
   service:
+    # XXX does not notify other daemons becasue:
+    # * mountd(8) does not re-register itself to portmap even after receiving
+    # HUP
+    # * its rc.subr script does not support restart
+    # portmap(8) has just one flag: -d for debug. it is unlikely to add that
+    # flag to live system
     name: portmap
     arguments: "{{ nfs_server_openbsd_portmap_flags }}"
     enabled: yes
-  notify:
-    - Restart portmap
 
 - name: Enable mountd
   service:
