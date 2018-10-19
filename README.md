@@ -1,6 +1,6 @@
 # ansible-role-nfs_server_openbsd
 
-A brief description of the role goes here.
+Configure NFS services.
 
 # Requirements
 
@@ -8,9 +8,12 @@ None
 
 # Role Variables
 
-| variable | description | default |
+| Variable | Description | Default |
 |----------|-------------|---------|
-
+| `nfs_server_openbsd_exports` | Content of [`export(5)`](https://man.openbsd.org/exports) | `""` |
+| `nfs_server_openbsd_portmap_flags` | Optional flags for [`portmap(8)`](https://man.openbsd.org/portmap) | `""` |
+| `nfs_server_openbsd_mountd_flags` | Optional flags for [`mountd`](https://man.openbsd.org/mountd) | `""` |
+| `nfs_server_openbsd_nfsd_flags` | Optional flags for [`nfsd`](https://man.openbsd.org/nfsd) | `""` |
 
 # Dependencies
 
@@ -19,6 +22,13 @@ None
 # Example Playbook
 
 ```yaml
+- hosts: localhost
+  roles:
+    - ansible-role-nfs_server_openbsd
+  vars:
+    nfs_server_openbsd_nfsd_flags: -tun 7
+    nfs_server_openbsd_exports: |
+      /docs -alldirs -ro -network=10.0.0 -mask=255.255.255.0
 ```
 
 # License
