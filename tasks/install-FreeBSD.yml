@@ -1,0 +1,6 @@
+---
+
+- name: Install nfs_server_openbsd
+  pkgng:
+    name: nfs_server_openbsd
+    state: present

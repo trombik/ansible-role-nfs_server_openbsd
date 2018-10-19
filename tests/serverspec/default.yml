@@ -1,0 +1,5 @@
+- hosts: localhost
+  roles:
+    - ansible-role-nfs_server_openbsd
+  vars:
+    nfs_server_openbsd_config: ""

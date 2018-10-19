@@ -1,0 +1,37 @@
+---
+# tasks file for ansible-role-nfs_server_openbsd
+
+- include_vars: "{{ ansible_os_family }}.yml"
+
+- include: "install-{{ ansible_os_family }}.yml"
+
+- name: Create log directory
+  file:
+    path: "{{ nfs_server_openbsd_log_dir }}"
+    mode: 0755
+    owner: "{{ nfs_server_openbsd_user }}"
+    group: "{{ nfs_server_openbsd_group }}"
+    state: directory
+  notify: Restart nfs_server_openbsd
+
+- name: Create db directory
+  file:
+    path: "{{ nfs_server_openbsd_db_dir }}"
+    mode: 0755
+    owner: "{{ nfs_server_openbsd_user }}"
+    group: "{{ nfs_server_openbsd_group }}"
+    state: directory
+  notify: Restart nfs_server_openbsd
+
+- name: Create nfs_server_openbsd.conf
+  template:
+    src: nfs_server_openbsd.conf.j2
+    dest: "{{ nfs_server_openbsd_conf_file }}"
+    validate: echo %s
+  notify: Restart nfs_server_openbsd
+
+- name: Start nfs_server_openbsd
+  service:
+    name: "{{ nfs_server_openbsd_service }}"
+    enabled: true
+    state: started

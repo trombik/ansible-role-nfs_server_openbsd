@@ -1,0 +1,6 @@
+---
+
+- name: Restart nfs_server_openbsd
+  service:
+    name: nfs_server_openbsd
+    state: restarted
