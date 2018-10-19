@@ -8,5 +8,8 @@
     no_proxy: "{{ no_proxy | default() }}"
 
   pre_tasks:
-  roles:
-    - nfs_server_openbsd
+    - name: Create /usr/ports/packages
+      file:
+        path: /usr/ports/packages
+        state: directory
+  roles: []
